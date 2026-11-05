@@ -2,72 +2,105 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('signin');
+  const [currentPage, setCurrentPage] = useState('phone-input'); // Бастапқы бетті осы экранға қойдық
   const [phoneNumber, setPhoneNumber] = useState('');
+
+  // Сандық пернетақта батырмаларын басқан кезде нөмірге қосу функциясы
+  const handleKeyPress = (num: string) => {
+    if (phoneNumber.length < 10) {
+      setPhoneNumber(prev => prev + num);
+    }
+  };
+
+  const handleBackspace = () => {
+    setPhoneNumber(prev => prev.slice(0, -1));
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.phoneScreen}>
 
-        {/* SIGN IN SCREEN */}
-        {currentPage === 'signin' && (
+        {/* 1. ENTER MOBILE NUMBER SCREEN (СУРЕТТЕГІ БЕТ) */}
+        {currentPage === 'phone-input' && (
           <View style={styles.screenContainer}>
-            {/* Жоғарғы сурет бөлімі */}
-            <View style={styles.headerImageContainer}>
-              <Text style={{ fontSize: 40 }}>🍅 🥦 🍎 🥕</Text>
-            </View>
+            <View>
+              {/* Жоғарғы артқа қайту батырмасы */}
+              <TouchableOpacity style={styles.backButton} onPress={() => alert('Welcome бетіне қайту')}>
+                <Text style={{ fontSize: 18 }}>〈</Text>
+              </TouchableOpacity>
 
-            <View style={styles.contentContainer}>
-              <Text style={styles.title}>Get your groceries{'\n'}with nectar</Text>
+              <Text style={styles.title}>Enter your mobile number</Text>
 
-              {/* Телефон нөмірі */}
+              <Text style={styles.label}>Mobile Number</Text>
+              
+              {/* Нөмір енгізу жолы */}
               <View style={styles.phoneInputRow}>
-                <Text style={{ fontSize: 22 }}>🇰🇿</Text>
+                <Text style={{ fontSize: 20 }}>🇰🇿</Text>
                 <Text style={styles.phoneCode}>+7</Text>
                 <TextInput 
                   style={styles.input}
                   placeholder="701 123 4567"
                   placeholderTextColor="#b0b0b0"
-                  keyboardType="phone-pad"
                   value={phoneNumber}
-                  onChangeText={setPhoneNumber}
-                  maxLength={12}
+                  editable={false} // Пернетақта арқылы жазылу үшін
                 />
               </View>
+            </View>
 
-              <Text style={styles.socialText}>Or connect with social media</Text>
-
-              {/* Google батырмасы */}
-              <TouchableOpacity style={styles.googleButton} onPress={() => setCurrentPage('shop')}>
-                <View style={styles.socialIconBox}><Text style={{ color: '#5383EC', fontWeight: 'bold' }}>G</Text></View>
-                <Text style={styles.socialButtonText}>Continue with Google</Text>
-              </TouchableOpacity>
-
-              {/* Facebook батырмасы */}
-              <TouchableOpacity style={styles.fbButton} onPress={() => setCurrentPage('shop')}>
-                <View style={styles.socialIconBox}><Text style={{ color: '#4A66AC', fontWeight: 'bold' }}>f</Text></View>
-                <Text style={styles.socialButtonText}>Continue with Facebook</Text>
+            {/* Оң жақ төменгі бұрыштағы жасыл стрелка батырмасы */}
+            <View style={styles.arrowButtonContainer}>
+              <TouchableOpacity 
+                style={styles.greenArrowButton} 
+                onPress={() => {
+                  if(phoneNumber.length < 10) {
+                    alert('Толық нөмірді енгізіңіз!');
+                    return;
+                  }
+                  setCurrentPage('shop');
+                }}
+              >
+                <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: 'bold' }}>〉</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.footerContainer}>
-              <Text style={styles.footerText}>By continuing you agree to our Terms & Conditions</Text>
+            {/* Figma-дағы сандық пернетақта (Keypad) */}
+            <View style={styles.keypadContainer}>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('1')}><Text style={styles.keyText}>1</Text><Text style={styles.subKeyText}></Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('2')}><Text style={styles.keyText}>2</Text><Text style={styles.subKeyText}>ABC</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('3')}><Text style={styles.keyText}>3</Text><Text style={styles.subKeyText}>DEF</Text></TouchableOpacity>
+              </View>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('4')}><Text style={styles.keyText}>4</Text><Text style={styles.subKeyText}>GHI</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('5')}><Text style={styles.keyText}>5</Text><Text style={styles.subKeyText}>JKL</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('6')}><Text style={styles.keyText}>6</Text><Text style={styles.subKeyText}>MNO</Text></TouchableOpacity>
+              </View>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('7')}><Text style={styles.keyText}>7</Text><Text style={styles.subKeyText}>PQRS</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('8')}><Text style={styles.keyText}>8</Text><Text style={styles.subKeyText}>TUV</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('9')}><Text style={styles.keyText}>9</Text><Text style={styles.subKeyText}>WXYZ</Text></TouchableOpacity>
+              </View>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key}><Text style={styles.keyText}>*#+</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('0')}><Text style={styles.keyText}>0</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={handleBackspace}><Text style={styles.keyText}>⌫</Text></TouchableOpacity>
+              </View>
             </View>
           </View>
         )}
 
-        {/* SHOP SCREEN */}
+        {/* 2. SHOP SCREEN (Дүкен беті) */}
         {currentPage === 'shop' && (
           <ScrollView contentContainerStyle={styles.shopContainer}>
             <Text style={{ fontSize: 32, textAlign: 'center', marginBottom: 10 }}>🥕</Text>
             <Text style={{ textAlign: 'center', color: '#828282', fontSize: 12, marginBottom: 20 }}>Dhaka, Banasree</Text>
 
-            <TouchableOpacity style={styles.backToSignin} onPress={() => setCurrentPage('signin')}>
-              <Text style={{ color: '#53B175', fontWeight: 'bold' }}>⬅️ Back to Sign In</Text>
+            <TouchableOpacity style={styles.backToSignin} onPress={() => setCurrentPage('phone-input')}>
+              <Text style={{ color: '#53B175', fontWeight: 'bold' }}>⬅️ Назад к вводу номера</Text>
             </TouchableOpacity>
 
             <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#181B20', marginTop: 20 }}>Welcome to Shop!</Text>
-            <Text style={{ color: '#7C7C7C', marginTop: 10 }}>Бұл жерде дүкен өнімдері көрсетіледі.</Text>
+            <Text style={{ color: '#7C7C7C', marginTop: 10 }}>Дүкеннің басты беті сәтті ашылды.</Text>
           </ScrollView>
         )}
 
@@ -95,95 +128,102 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 5,
+    justifyContent: 'space-between',
   },
   screenContainer: {
     flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 40,
     justifyContent: 'space-between',
   },
-  headerImageContainer: {
-    width: '100%',
-    height: 280,
-    backgroundColor: '#fcf8f2',
-    alignItems: 'center',
+  backButton: {
+    width: 40,
+    height: 40,
     justifyContent: 'center',
-  },
-  contentContainer: {
-    paddingHorizontal: 24,
-    flex: 1,
+    marginBottom: 20,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
     color: '#030303',
     marginBottom: 30,
-    lineHeight: 34,
+  },
+  label: {
+    fontSize: 14,
+    color: '#7C7C7C',
+    marginBottom: 5,
   },
   phoneInputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#E2E2E2',
-    paddingBottom: 10,
-    marginBottom: 40,
+    paddingBottom: 8,
   },
   phoneCode: {
     fontSize: 18,
     fontWeight: '600',
     color: '#030303',
-    marginLeft: 10,
-    marginRight: 10,
+    marginLeft: 8,
+    marginRight: 8,
   },
   input: {
     flex: 1,
     fontSize: 18,
     color: '#030303',
   },
-  socialText: {
-    textAlign: 'center',
-    color: '#828282',
-    fontSize: 13,
-    marginBottom: 20,
+  arrowButtonContainer: {
+    alignItems: 'flex-end',
+    paddingRight: 10,
   },
-  googleButton: {
-    backgroundColor: '#5383EC',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 18,
-    marginBottom: 16,
-  },
-  fbButton: {
-    backgroundColor: '#4A66AC',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 18,
-    marginBottom: 20,
-  },
-  socialIconBox: {
-    width: 28,
-    height: 28,
-    backgroundColor: '#ffffff',
-    borderRadius: 14,
+  greenArrowButton: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#53B175',
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 20,
+    shadowColor: '#53B175',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
-  socialButtonText: {
-    color: '#ffffff',
-    fontSize: 15,
-    fontWeight: '500',
+  keypadContainer: {
+    backgroundColor: '#F4F4F4',
+    paddingBottom: 20,
+    paddingTop: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
-  footerContainer: {
-    padding: 20,
+  keyRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+  },
+  key: {
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    backgroundColor: '#ffffff',
+    marginHorizontal: 4,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 2,
   },
-  footerText: {
+  keyText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#030303',
+  },
+  subKeyText: {
+    fontSize: 8,
     color: '#828282',
-    fontSize: 11,
-    textAlign: 'center',
+    fontWeight: 'bold',
   },
   shopContainer: {
     padding: 20,
