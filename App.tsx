@@ -84,7 +84,7 @@ export default function App() {
                 <Text style={styles.prodName}>Ginger</Text>
                 <Text style={styles.prodDesc}>250g, Priceg</Text>
                 <View style={styles.cardFooter}>
-                  <Text style={styles.prodPrice>}>$4.99</Text>
+                  <Text style={styles.prodPrice}>$4.99</Text>
                   <TouchableOpacity style={styles.plusBtn}><Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>+</Text></TouchableOpacity>
                 </View>
               </View>
