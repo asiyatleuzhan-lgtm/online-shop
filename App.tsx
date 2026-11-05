@@ -1,59 +1,76 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 
 export default function App() {
-  // Бастапқы бетті бірден 'location' (Select Your Location) етіп орнаттық
-  const [currentPage, setCurrentPage] = useState('location');
-  const [selectedZone, setSelectedZone] = useState('Banasree');
-  const [selectedArea, setSelectedArea] = useState('Types of your area');
+  // Бастапқы бетті бірден 'login' етіп орнаттық
+  const [currentPage, setCurrentPage] = useState('login');
+  const [email, setEmail] = useState('imshuvo97@gmail.com');
+  const [password, setPassword] = useState('12345678');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View style={styles.container}>
       <View style={styles.phoneScreen}>
 
-        {/* SELECT YOUR LOCATION SCREEN */}
-        {currentPage === 'location' && (
+        {/* LOGIN SCREEN */}
+        {currentPage === 'login' && (
           <View style={styles.screenContainer}>
             <View>
-              {/* Артқа қайту батырмасы */}
-              <TouchableOpacity style={styles.backButton} onPress={() => alert('Алдыңғы бет')}>
-                <Text style={{ fontSize: 18, color: '#030303' }}>〈</Text>
+              {/* Жоғарғы сәбіз иконкасы */}
+              <View style={{ alignItems: 'center', marginTop: 20, marginBottom: 40 }}>
+                <Text style={{ fontSize: 50 }}>🥕</Text>
+              </View>
+
+              <Text style={styles.title}>Loging</Text>
+              <Text style={styles.subtitle}>Enter your emails and password</Text>
+
+              {/* Email енгізу */}
+              <Text style={styles.label}>Email</Text>
+              <TextInput 
+                style={styles.input}
+                value={email}
+                onChangeText={setEmail}
+                placeholder="email@example.com"
+                keyboardType="email-address"
+              />
+
+              {/* Password енгізу */}
+              <Text style={[styles.label, { marginTop: 25 }]}>Password</Text>
+              <View style={styles.passwordRow}>
+                <TextInput 
+                  style={[styles.input, { borderBottomWidth: 0, flex: 1 }]}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  placeholder="Password"
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <Text style={{ fontSize: 16, color: '#7C7C7C' }}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Forgot Password */}
+              <TouchableOpacity style={{ alignSelf: 'flex-end', marginTop: 15 }}>
+                <Text style={{ color: '#181B20', fontSize: 13, fontWeight: '500' }}>Forgot Password?</Text>
               </TouchableOpacity>
-
-              {/* Иконка мен тақырыптар */}
-              <View style={{ alignItems: 'center', marginTop: 10, marginBottom: 30 }}>
-                <Text style={{ fontSize: 70, marginBottom: 20 }}>🗺️</Text>
-                <Text style={styles.title}>Select Your Location</Text>
-                <Text style={styles.subtitle}>
-                  Switch on your location to stay in tune with what's happening in your area
-                </Text>
-              </View>
-
-              {/* Your Zone селекторы */}
-              <Text style={styles.label}>Your Zone</Text>
-              <View style={styles.dropdownRow}>
-                <Text style={styles.dropdownText}>{selectedZone}</Text>
-                <Text style={{ color: '#7C7C7C', fontSize: 16 }}>⌄</Text>
-              </View>
-
-              {/* Your Area селекторы */}
-              <Text style={[styles.label, { marginTop: 25 }]}>Your Area</Text>
-              <View style={styles.dropdownRow}>
-                <Text style={[styles.dropdownText, { color: selectedArea === 'Types of your area' ? '#B1B1B1' : '#030303' }]}>
-                  {selectedArea}
-                </Text>
-                <Text style={{ color: '#7C7C7C', fontSize: 16 }}>⌄</Text>
-              </View>
             </View>
 
-            {/* Submit батырмасы */}
             <View style={{ marginBottom: 30 }}>
+              {/* Log In батырмасы */}
               <TouchableOpacity 
-                style={styles.submitButton} 
+                style={styles.loginButton} 
                 onPress={() => setCurrentPage('shop')}
               >
-                <Text style={styles.submitButtonText}>Submit</Text>
+                <Text style={styles.loginButtonText}>Log In</Text>
               </TouchableOpacity>
+
+              {/* Төменгі тіркелу жазуы */}
+              <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+                <Text style={{ color: '#7C7C7C', fontSize: 14 }}>Don't have an account? </Text>
+                <TouchableOpacity onPress={() => alert('Sign up бетіне өту')}>
+                  <Text style={{ color: '#53B175', fontSize: 14, fontWeight: '600' }}>Signup</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         )}
@@ -64,8 +81,8 @@ export default function App() {
             <Text style={{ fontSize: 32, textAlign: 'center', marginBottom: 10 }}>🥕</Text>
             <Text style={{ textAlign: 'center', color: '#828282', fontSize: 12, marginBottom: 20 }}>Dhaka, Banasree</Text>
 
-            <TouchableOpacity style={styles.backToSignin} onPress={() => setCurrentPage('location')}>
-              <Text style={{ color: '#53B175', fontWeight: 'bold' }}>⬅️ Локация таңдауға қайту</Text>
+            <TouchableOpacity style={styles.backToLogin} onPress={() => setCurrentPage('login')}>
+              <Text style={{ color: '#53B175', fontWeight: 'bold' }}>⬅️ Login бетіне қайту</Text>
             </TouchableOpacity>
 
             <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#181B20', marginTop: 20 }}>Welcome to Shop!</Text>
@@ -100,49 +117,40 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingTop: 30,
     justifyContent: 'space-between',
   },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     color: '#030303',
-    marginBottom: 12,
-    textAlign: 'center',
+    marginBottom: 8,
   },
   subtitle: {
-    textAlign: 'center',
     color: '#7C7C7C',
     fontSize: 14,
-    paddingHorizontal: 15,
-    lineHeight: 20,
+    marginBottom: 30,
   },
   label: {
     fontSize: 14,
     color: '#7C7C7C',
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: 5,
   },
-  dropdownRow: {
+  input: {
+    fontSize: 16,
+    color: '#030303',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E2E2',
+    paddingBottom: 8,
+  },
+  passwordRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#E2E2E2',
-    paddingBottom: 12,
   },
-  dropdownText: {
-    fontSize: 16,
-    color: '#030303',
-    fontWeight: '500',
-  },
-  submitButton: {
+  loginButton: {
     backgroundColor: '#53B175',
     paddingVertical: 18,
     borderRadius: 18,
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
-  submitButtonText: {
+  loginButtonText: {
     color: '#ffffff',
     fontSize: 18,
     fontWeight: '600',
@@ -162,7 +170,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
-  backToSignin: {
+  backToLogin: {
     marginTop: 20,
     padding: 10,
     backgroundColor: '#e8f5e9',
