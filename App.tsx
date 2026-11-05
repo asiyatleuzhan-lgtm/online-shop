@@ -2,38 +2,49 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('phone-input'); // Бастапқы бетті осы экранға қойдық
+  const [currentPage, setCurrentPage] = useState('phone-input'); // 'phone-input', 'verification', 'location', 'shop'
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [selectedZone, setSelectedZone] = useState('Banasree');
+  const [selectedArea, setSelectedArea] = useState('Types of your area');
 
-  // Сандық пернетақта батырмаларын басқан кезде нөмірге қосу функциясы
-  const handleKeyPress = (num: string) => {
+  // Телефон нөмірі үшін пернетақта логикасы
+  const handlePhoneKeyPress = (num: string) => {
     if (phoneNumber.length < 10) {
       setPhoneNumber(prev => prev + num);
     }
   };
 
-  const handleBackspace = () => {
+  const handlePhoneBackspace = () => {
     setPhoneNumber(prev => prev.slice(0, -1));
+  };
+
+  // 4 таңбалы код үшін пернетақта логикасы
+  const handleCodeKeyPress = (num: string) => {
+    if (verificationCode.length < 4) {
+      setVerificationCode(prev => prev + num);
+    }
+  };
+
+  const handleCodeBackspace = () => {
+    setVerificationCode(prev => prev.slice(0, -1));
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.phoneScreen}>
 
-        {/* 1. ENTER MOBILE NUMBER SCREEN (СУРЕТТЕГІ БЕТ) */}
+        {/* 1. ENTER MOBILE NUMBER SCREEN */}
         {currentPage === 'phone-input' && (
           <View style={styles.screenContainer}>
             <View>
-              {/* Жоғарғы артқа қайту батырмасы */}
-              <TouchableOpacity style={styles.backButton} onPress={() => alert('Welcome бетіне қайту')}>
+              <TouchableOpacity style={styles.backButton} onPress={() => alert('Welcome беті')}>
                 <Text style={{ fontSize: 18 }}>〈</Text>
               </TouchableOpacity>
 
               <Text style={styles.title}>Enter your mobile number</Text>
-
               <Text style={styles.label}>Mobile Number</Text>
               
-              {/* Нөмір енгізу жолы */}
               <View style={styles.phoneInputRow}>
                 <Text style={{ fontSize: 20 }}>🇰🇿</Text>
                 <Text style={styles.phoneCode}>+7</Text>
@@ -42,12 +53,11 @@ export default function App() {
                   placeholder="701 123 4567"
                   placeholderTextColor="#b0b0b0"
                   value={phoneNumber}
-                  editable={false} // Пернетақта арқылы жазылу үшін
+                  editable={false}
                 />
               </View>
             </View>
 
-            {/* Оң жақ төменгі бұрыштағы жасыл стрелка батырмасы */}
             <View style={styles.arrowButtonContainer}>
               <TouchableOpacity 
                 style={styles.greenArrowButton} 
@@ -56,47 +66,154 @@ export default function App() {
                     alert('Толық нөмірді енгізіңіз!');
                     return;
                   }
-                  setCurrentPage('shop');
+                  setCurrentPage('verification');
                 }}
               >
                 <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: 'bold' }}>〉</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Figma-дағы сандық пернетақта (Keypad) */}
             <View style={styles.keypadContainer}>
               <View style={styles.keyRow}>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('1')}><Text style={styles.keyText}>1</Text><Text style={styles.subKeyText}></Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('2')}><Text style={styles.keyText}>2</Text><Text style={styles.subKeyText}>ABC</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('3')}><Text style={styles.keyText}>3</Text><Text style={styles.subKeyText}>DEF</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('1')}><Text style={styles.keyText}>1</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('2')}><Text style={styles.keyText}>2</Text><Text style={styles.subKeyText}>ABC</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('3')}><Text style={styles.keyText}>3</Text><Text style={styles.subKeyText}>DEF</Text></TouchableOpacity>
               </View>
               <View style={styles.keyRow}>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('4')}><Text style={styles.keyText}>4</Text><Text style={styles.subKeyText}>GHI</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('5')}><Text style={styles.keyText}>5</Text><Text style={styles.subKeyText}>JKL</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('6')}><Text style={styles.keyText}>6</Text><Text style={styles.subKeyText}>MNO</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('4')}><Text style={styles.keyText}>4</Text><Text style={styles.subKeyText}>GHI</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('5')}><Text style={styles.keyText}>5</Text><Text style={styles.subKeyText}>JKL</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('6')}><Text style={styles.keyText}>6</Text><Text style={styles.subKeyText}>MNO</Text></TouchableOpacity>
               </View>
               <View style={styles.keyRow}>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('7')}><Text style={styles.keyText}>7</Text><Text style={styles.subKeyText}>PQRS</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('8')}><Text style={styles.keyText}>8</Text><Text style={styles.subKeyText}>TUV</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('9')}><Text style={styles.keyText}>9</Text><Text style={styles.subKeyText}>WXYZ</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('7')}><Text style={styles.keyText}>7</Text><Text style={styles.subKeyText}>PQRS</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('8')}><Text style={styles.keyText}>8</Text><Text style={styles.subKeyText}>TUV</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('9')}><Text style={styles.keyText}>9</Text><Text style={styles.subKeyText}>WXYZ</Text></TouchableOpacity>
               </View>
               <View style={styles.keyRow}>
                 <TouchableOpacity style={styles.key}><Text style={styles.keyText}>*#+</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={() => handleKeyPress('0')}><Text style={styles.keyText}>0</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.key} onPress={handleBackspace}><Text style={styles.keyText}>⌫</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handlePhoneKeyPress('0')}><Text style={styles.keyText}>0</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={handlePhoneBackspace}><Text style={styles.keyText}>⌫</Text></TouchableOpacity>
               </View>
             </View>
           </View>
         )}
 
-        {/* 2. SHOP SCREEN (Дүкен беті) */}
+        {/* 2. ENTER 4-DIGIT CODE SCREEN */}
+        {currentPage === 'verification' && (
+          <View style={styles.screenContainer}>
+            <View>
+              <TouchableOpacity style={styles.backButton} onPress={() => setCurrentPage('phone-input')}>
+                <Text style={{ fontSize: 18 }}>〈</Text>
+              </TouchableOpacity>
+
+              <Text style={styles.title}>Enter your 4-digit code</Text>
+              <Text style={styles.label}>Code</Text>
+              
+              <View style={styles.phoneInputRow}>
+                <TextInput 
+                  style={[styles.input, { letterSpacing: 8, fontSize: 22 }]}
+                  placeholder="----"
+                  placeholderTextColor="#b0b0b0"
+                  value={verificationCode}
+                  editable={false}
+                />
+              </View>
+
+              <TouchableOpacity onPress={() => alert('Код қайта жіберілді!')} style={{ marginTop: 15 }}>
+                <Text style={{ color: '#53B175', fontWeight: '500', fontSize: 14 }}>Resend Code</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.arrowButtonContainer}>
+              <TouchableOpacity 
+                style={styles.greenArrowButton} 
+                onPress={() => {
+                  if(verificationCode.length < 4) {
+                    alert('4 таңбалы кодты толық енгізіңіз!');
+                    return;
+                  }
+                  setCurrentPage('location'); // Орналасқан жерді таңдау бетіне өту
+                }}
+              >
+                <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: 'bold' }}>〉</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.keypadContainer}>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('1')}><Text style={styles.keyText}>1</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('2')}><Text style={styles.keyText}>2</Text><Text style={styles.subKeyText}>ABC</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('3')}><Text style={styles.keyText}>3</Text><Text style={styles.subKeyText}>DEF</Text></TouchableOpacity>
+              </View>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('4')}><Text style={styles.keyText}>4</Text><Text style={styles.subKeyText}>GHI</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('5')}><Text style={styles.keyText}>5</Text><Text style={styles.subKeyText}>JKL</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('6')}><Text style={styles.keyText}>6</Text><Text style={styles.subKeyText}>MNO</Text></TouchableOpacity>
+              </View>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('7')}><Text style={styles.keyText}>7</Text><Text style={styles.subKeyText}>PQRS</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('8')}><Text style={styles.keyText}>8</Text><Text style={styles.subKeyText}>TUV</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('9')}><Text style={styles.keyText}>9</Text><Text style={styles.subKeyText}>WXYZ</Text></TouchableOpacity>
+              </View>
+              <View style={styles.keyRow}>
+                <TouchableOpacity style={styles.key}><Text style={styles.keyText}>*#+</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={() => handleCodeKeyPress('0')}><Text style={styles.keyText}>0</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.key} onPress={handleCodeBackspace}><Text style={styles.keyText}>⌫</Text></TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* 3. SELECT YOUR LOCATION SCREEN (ЖАҢА БЕТ) */}
+        {currentPage === 'location' && (
+          <View style={styles.screenContainer}>
+            <View>
+              <TouchableOpacity style={styles.backButton} onPress={() => setCurrentPage('verification')}>
+                <Text style={{ fontSize: 18 }}>〈</Text>
+              </TouchableOpacity>
+
+              <View style={{ alignItems: 'center', marginTop: 10, marginBottom: 30 }}>
+                <Text style={{ fontSize: 60, marginBottom: 15 }}>📍</Text>
+                <Text style={[styles.title, { textAlign: 'center', marginBottom: 10 }]}>Select Your Location</Text>
+                <Text style={{ textAlign: 'center', color: '#7C7C7C', fontSize: 14, paddingHorizontal: 20, lineHeight: 20 }}>
+                  Switch on your location to stay in tune with what's happening in your area
+                </Text>
+              </View>
+
+              <Text style={styles.label}>Your Zone</Text>
+              <View style={styles.dropdownRow}>
+                <Text style={styles.dropdownText}>{selectedZone}</Text>
+                <Text style={{ color: '#7C7C7C' }}>⌄</Text>
+              </View>
+
+              <Text style={[styles.label, { marginTop: 20 }]}>Your Area</Text>
+              <View style={styles.dropdownRow}>
+                <Text style={[styles.dropdownText, { color: selectedArea === 'Types of your area' ? '#b0b0b0' : '#030303' }]}>
+                  {selectedArea}
+                </Text>
+                <Text style={{ color: '#7C7C7C' }}>⌄</Text>
+              </View>
+            </View>
+
+            <View style={{ marginBottom: 40 }}>
+              <TouchableOpacity 
+                style={styles.submitButton} 
+                onPress={() => setCurrentPage('shop')}
+              >
+                <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* 4. SHOP SCREEN */}
         {currentPage === 'shop' && (
           <ScrollView contentContainerStyle={styles.shopContainer}>
             <Text style={{ fontSize: 32, textAlign: 'center', marginBottom: 10 }}>🥕</Text>
             <Text style={{ textAlign: 'center', color: '#828282', fontSize: 12, marginBottom: 20 }}>Dhaka, Banasree</Text>
 
-            <TouchableOpacity style={styles.backToSignin} onPress={() => setCurrentPage('phone-input')}>
-              <Text style={{ color: '#53B175', fontWeight: 'bold' }}>⬅️ Назад к вводу номера</Text>
+            <TouchableOpacity style={styles.backToSignin} onPress={() => setCurrentPage('location')}>
+              <Text style={{ color: '#53B175', fontWeight: 'bold' }}>⬅️ Локацияға қайту</Text>
             </TouchableOpacity>
 
             <Text style={{ fontSize: 22, fontWeight: 'bold', color: '#181B20', marginTop: 20 }}>Welcome to Shop!</Text>
@@ -140,13 +257,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
     color: '#030303',
-    marginBottom: 30,
+    marginBottom: 15,
   },
   label: {
     fontSize: 14,
@@ -224,6 +341,30 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: '#828282',
     fontWeight: 'bold',
+  },
+  dropdownRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E2E2',
+    paddingBottom: 10,
+  },
+  dropdownText: {
+    fontSize: 18,
+    color: '#030303',
+    fontWeight: '500',
+  },
+  submitButton: {
+    backgroundColor: '#53B175',
+    paddingVertical: 18,
+    borderRadius: 18,
+    alignItems: 'center',
+    shadowColor: '#53B175',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 5,
   },
   shopContainer: {
     padding: 20,
